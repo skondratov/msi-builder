@@ -11,4 +11,4 @@ choco install wixtoolset
 
 Copy review ```artifacats/*``` folder, replace artifacts with you own. Rename ```example_config.ini``` to ```config.ini```. Adjust parameters in ```config.ini```.
 
-Run ```MsiBuilder.exe path_to_your_app```
+Run ```MsiBuilder.exe path_to_your_app output_path```

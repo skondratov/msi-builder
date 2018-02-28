@@ -1,6 +1,7 @@
 ﻿using System;
 using WixSharp;
 using IniParser;
+using System.IO;
 
 namespace MsiBuilder
 {
@@ -66,15 +67,23 @@ namespace MsiBuilder
 
     class Program
     {
-        private static readonly string configIniFilePath = @"artifacts\config.ini";
+        private static readonly string configIniFilePath = GetArtifactsPath("config.ini");
+
+        public static string GetArtifactsPath(string artifactFileName)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "artifacts", artifactFileName);
+        }
 
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length != 2)
             {
-                Console.WriteLine("Wrong command line arguments. Usage installer.exe path_to_binaries");
+                Console.WriteLine("Wrong command line arguments. Usage installer.exe path_to_binaries output_path");
                 return;
             }
+
+            var pathToBinaries = args[0];
+            var outputPath = args[1];
 
             if (!System.IO.File.Exists(configIniFilePath))
             {
@@ -118,12 +127,13 @@ namespace MsiBuilder
             project.UI = WUI.WixUI_Advanced;
             project.ValidateBackgroundImage = false;
 
-            project.BackgroundImage = config.BackgroungImage;
-            project.BannerImage = config.BannerImage;
+            project.BackgroundImage = GetArtifactsPath(config.BackgroungImage);
+            project.BannerImage = GetArtifactsPath(config.BannerImage);
             project.OutFileName = config.OutFileName;
+            project.OutDir = outputPath;
 
             project.PreserveTempFiles = config.PreserveTempFiles;
-            project.LicenceFile = config.LicenceFile;
+            project.LicenceFile = GetArtifactsPath(config.LicenceFile);
             project.GUID = new Guid(config.Guid);
             project.BuildMsi();
         }
