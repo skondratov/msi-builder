@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{65264096-B6D0-447D-95D9-DA3FE31CB143}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Installer</RootNamespace>
-    <AssemblyName>Installer</AssemblyName>
+    <RootNamespace>MsiBuilder</RootNamespace>
+    <AssemblyName>MsiBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
