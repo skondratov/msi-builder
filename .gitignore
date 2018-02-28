@@ -51,7 +51,7 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+# artifacts/ -- It is not .netcore project
 **/Properties/launchSettings.json
 
 # StyleCop
@@ -318,3 +318,5 @@ ASALocalRun/
 
 # MSBuild Binary and Structured Log
 *.binlog
+
+

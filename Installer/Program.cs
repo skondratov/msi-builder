@@ -1,9 +1,8 @@
 ﻿using System;
 using WixSharp;
 using IniParser;
-using System.IO;
 
-namespace Installer
+namespace MsiBuilder
 {
     public struct Config
     {
@@ -33,31 +32,41 @@ namespace Installer
 
         public string BannerImage { get; private set; }
 
+        public bool PreserveTempFiles { get; private set; }
+
         public Config(string filename)
         {
-            var parser = new FileIniDataParser();
-            var data = parser.ReadFile(filename);
-            var config = data["config"];
+            try
+            {
+                var parser = new FileIniDataParser();
+                var data = parser.ReadFile(filename);
+                var config = data["config"];
 
-            Company = config["Company"];
-            FullAppName = config["FullAppName"];
-            AppName = config["AppName"];
-            ShortCutName = config["ShortCutName"];
-            ExecutableName = config["ExecutableName"];
-            Manufacturer = config["Manufacturer"];
-            Version = config["Version"];
-            Contact = config["Contact"];
-            BackgroungImage = config["BackgroungImage"];
-            LicenceFile = config["LicenceFile"];
-            Guid = config["Guid"];
-            OutFileName = config["OutFileName"];
-            BannerImage = config["BannerImage"];
+                Company = config["Company"];
+                FullAppName = config["FullAppName"];
+                AppName = config["AppName"];
+                ShortCutName = config["ShortCutName"];
+                ExecutableName = config["ExecutableName"];
+                Manufacturer = config["Manufacturer"];
+                Version = config["Version"];
+                Contact = config["Contact"];
+                BackgroungImage = config["BackgroungImage"];
+                LicenceFile = config["LicenceFile"];
+                Guid = config["Guid"];
+                OutFileName = config["OutFileName"];
+                BannerImage = config["BannerImage"];
+                PreserveTempFiles = config["PreserveTempFiles"].ToString() == true.ToString();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(string.Format("Unable to read ini file, please refer to example_config.ini format. Error message: {0}", e.Message));
+            }
         }
     }
 
     class Program
     {
-        private static readonly string configIniFileName = "config.ini";
+        private static readonly string configIniFilePath = @"artifacts\config.ini";
 
         static void Main(string[] args)
         {
@@ -67,13 +76,13 @@ namespace Installer
                 return;
             }
 
-            if (!System.IO.File.Exists(configIniFileName))
+            if (!System.IO.File.Exists(configIniFilePath))
             {
-                Console.WriteLine("Can not find {0} file", configIniFileName);
+                Console.WriteLine("Can not find {0} file", configIniFilePath);
                 return;
             }
 
-            var config = new Config(configIniFileName);
+            var config = new Config(configIniFilePath);
 
             var desktopIcon = new Feature("Desktop icon", "Add icon to Desktop");
             var addToStarupMenu = new Feature("Add to Startup Menu", "Add application to Startup Menu");
@@ -107,12 +116,13 @@ namespace Installer
             project.ControlPanelInfo.Manufacturer = config.Manufacturer;
             project.ControlPanelInfo.Contact = config.Contact;
             project.UI = WUI.WixUI_Advanced;
+            project.ValidateBackgroundImage = false;
 
             project.BackgroundImage = config.BackgroungImage;
             project.BannerImage = config.BannerImage;
             project.OutFileName = config.OutFileName;
 
-            project.PreserveTempFiles = true;
+            project.PreserveTempFiles = config.PreserveTempFiles;
             project.LicenceFile = config.LicenceFile;
             project.GUID = new Guid(config.Guid);
             project.BuildMsi();
