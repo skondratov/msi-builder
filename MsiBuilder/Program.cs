@@ -35,6 +35,8 @@ namespace MsiBuilder
 
         public bool PreserveTempFiles { get; private set; }
 
+        public string ProductIcon { get; private set; }
+
         public Config(string filename)
         {
             try
@@ -57,6 +59,7 @@ namespace MsiBuilder
                 OutFileName = config["OutFileName"];
                 BannerImage = config["BannerImage"];
                 PreserveTempFiles = config["PreserveTempFiles"].ToString() == true.ToString();
+                ProductIcon = config["ProductIcon"];
             }
             catch (Exception e)
             {
@@ -131,6 +134,7 @@ namespace MsiBuilder
             project.BannerImage = GetArtifactsPath(config.BannerImage);
             project.OutFileName = config.OutFileName;
             project.OutDir = outputPath;
+            project.ControlPanelInfo.ProductIcon = GetArtifactsPath(config.ProductIcon);
 
             project.PreserveTempFiles = config.PreserveTempFiles;
             project.LicenceFile = GetArtifactsPath(config.LicenceFile);

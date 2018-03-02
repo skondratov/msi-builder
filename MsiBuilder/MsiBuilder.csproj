@@ -107,6 +107,7 @@
   <ItemGroup>
     <Content Include="artifacts\background.png" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="artifacts\logo.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="artifacts\msi_icon.ico" CopyToOutputDirectory="PreserveNewest" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
