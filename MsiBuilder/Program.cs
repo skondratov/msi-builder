@@ -19,8 +19,6 @@ namespace MsiBuilder
 
         public string Manufacturer { get; private set; }
 
-        public string Version { get; private set; }
-
         public string Contact { get; private set; }
 
         public string BackgroungImage { get; private set; }
@@ -51,7 +49,6 @@ namespace MsiBuilder
                 ShortCutName = config["ShortCutName"];
                 ExecutableName = config["ExecutableName"];
                 Manufacturer = config["Manufacturer"];
-                Version = config["Version"];
                 Contact = config["Contact"];
                 BackgroungImage = config["BackgroungImage"];
                 LicenceFile = config["LicenceFile"];
@@ -79,14 +76,15 @@ namespace MsiBuilder
 
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 3)
             {
-                Console.WriteLine("Wrong command line arguments. Usage installer.exe path_to_binaries output_path");
+                Console.WriteLine("Wrong command line arguments. Usage installer.exe path_to_binaries output_path version");
                 return;
             }
 
             var pathToBinaries = args[0];
             var outputPath = args[1];
+            var version = args[2];
 
             if (!System.IO.File.Exists(configIniFilePath))
             {
@@ -124,7 +122,7 @@ namespace MsiBuilder
                 new Property("WixAppFolder", "WixPerMachineFolder")
             );
 
-            project.Version = new Version(config.Version);
+            project.Version = new Version(version);
             project.ControlPanelInfo.Manufacturer = config.Manufacturer;
             project.ControlPanelInfo.Contact = config.Contact;
             project.UI = WUI.WixUI_Advanced;
