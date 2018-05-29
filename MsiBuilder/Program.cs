@@ -128,8 +128,14 @@ namespace MsiBuilder
             project.UI = WUI.WixUI_Advanced;
             project.ValidateBackgroundImage = false;
 
-            project.BackgroundImage = GetArtifactsPath(config.BackgroungImage);
-            project.BannerImage = GetArtifactsPath(config.BannerImage);
+            if (!string.IsNullOrWhiteSpace(config.BackgroungImage))
+            {
+                project.BackgroundImage = GetArtifactsPath(config.BackgroungImage);
+            }
+            if (!string.IsNullOrWhiteSpace(config.BannerImage))
+            {
+                project.BannerImage = GetArtifactsPath(config.BannerImage);
+            }
             project.OutFileName = config.OutFileName;
             project.OutDir = outputPath;
             project.ControlPanelInfo.ProductIcon = GetArtifactsPath(config.ProductIcon);
