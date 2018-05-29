@@ -102,22 +102,22 @@ namespace MsiBuilder
 
             var project = new ManagedProject(
                 config.FullAppName,
-                new Dir(string.Format(@"%ProgramFiles%\{0}\{1}", config.Company, config.AppName),
+                new Dir(new Id("APPLICATIONFOLDER"),
+                    string.Format(@"%ProgramFiles%\{0}\{1}", config.Company, config.AppName),
                     new Files(string.Format(@"{0}\*.*", args[0])),
                     uninstallShortcut()),
                 new Dir(string.Format(@"%ProgramMenu%\{0}\{1}", config.Company, config.AppName),
                     uninstallShortcut(),
-                    new ExeFileShortcut(addToStarupMenu, config.AppName, string.Format("[INSTALLDIR]{0}", config.ExecutableName), "")
+                    new ExeFileShortcut(addToStarupMenu, config.AppName, string.Format("[APPLICATIONFOLDER]{0}", config.ExecutableName), "")
                     {
-                        WorkingDirectory = "[INSTALLDIR]"
+                        WorkingDirectory = "[APPLICATIONFOLDER]"
                     }),
                 new Dir(@"%Desktop%",
-                    new ExeFileShortcut(desktopIcon, config.FullAppName, string.Format("[INSTALLDIR]{0}", config.ExecutableName), "")
+                    new ExeFileShortcut(desktopIcon, config.FullAppName, string.Format("[APPLICATIONFOLDER]{0}", config.ExecutableName), "")
                     {
-                        WorkingDirectory = "[INSTALLDIR]"
+                        WorkingDirectory = "[APPLICATIONFOLDER]"
                     }),
 
-                new Dir(new Id("APPLICATIONFOLDER"), config.AppName),
                 new Property("ApplicationFolderName", config.AppName),
                 new Property("WixAppFolder", "WixPerMachineFolder")
             );
@@ -128,8 +128,14 @@ namespace MsiBuilder
             project.UI = WUI.WixUI_Advanced;
             project.ValidateBackgroundImage = false;
 
-            project.BackgroundImage = GetArtifactsPath(config.BackgroungImage);
-            project.BannerImage = GetArtifactsPath(config.BannerImage);
+            if (!string.IsNullOrWhiteSpace(config.BackgroungImage))
+            {
+                project.BackgroundImage = GetArtifactsPath(config.BackgroungImage);
+            }
+            if (!string.IsNullOrWhiteSpace(config.BannerImage))
+            {
+                project.BannerImage = GetArtifactsPath(config.BannerImage);
+            }
             project.OutFileName = config.OutFileName;
             project.OutDir = outputPath;
             project.ControlPanelInfo.ProductIcon = GetArtifactsPath(config.ProductIcon);
