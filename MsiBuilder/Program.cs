@@ -100,10 +100,11 @@ namespace MsiBuilder
             Func<ExeFileShortcut> uninstallShortcut = () =>
                 new ExeFileShortcut(string.Format("Uninstall {0}", config.FullAppName), "[System64Folder]msiexec.exe", "/x [ProductCode]");
 
+            var appFolder = string.Format(@"{0}\{1}", config.Company, config.AppName);
             var project = new ManagedProject(
                 config.FullAppName,
                 new Dir(new Id("APPLICATIONFOLDER"),
-                    string.Format(@"%ProgramFiles%\{0}\{1}", config.Company, config.AppName),
+                    appFolder,
                     new Files(string.Format(@"{0}\*.*", args[0])),
                     uninstallShortcut()),
                 new Dir(string.Format(@"%ProgramMenu%\{0}\{1}", config.Company, config.AppName),
@@ -118,8 +119,9 @@ namespace MsiBuilder
                         WorkingDirectory = "[APPLICATIONFOLDER]"
                     }),
 
-                new Property("ApplicationFolderName", config.AppName),
-                new Property("WixAppFolder", "WixPerMachineFolder")
+                new Property("ApplicationFolderName", appFolder),
+                new Property("WixAppFolder", "WixPerMachineFolder"),
+                new Property("ALLUSERS", "1")
             );
 
             project.Version = new Version(version);
